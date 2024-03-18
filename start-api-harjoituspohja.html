@@ -8,7 +8,7 @@
   </head>
   <body>
     <ul>
-      <li><a href="#home">Esimerkkisivusto</a></li>
+      <li><a href="start-api-harjoituspohja.html">Koti</a></li>
       <li><a href="#news">Tietoja</a></li>
       <li style="float: right" class="active logout"><a href="">Logout</a></li>
     </ul>
@@ -118,13 +118,15 @@
           }
           </code></pre>
 
-        <form class="addform">
-          <!-- tänne formi -->
-          <!-- https://www.w3schools.com/css/css_form.asp -->
-          <!-- https://www.w3schools.com/css/tryit.asp?filename=trycss_form_padding -->
-
-          <!-- formin avulla testaamme create ja update user reittejä -->
-        </form>
+          <form class="update-form">
+            <label for="username">User Name:</label><br>
+            <input type="text" id="username" name="username" required><br>
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br>
+            <label for="userlevel">User Level:</label><br>
+            <input type="text" id="userlevel" name="user_level" required><br>
+            <button type="submit" class="update-button">Update User</button>
+          </form>
       </div>
     </div>
 

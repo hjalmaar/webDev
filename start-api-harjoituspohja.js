@@ -4,7 +4,7 @@ import { fetchData } from './fetch.js';
 const bt1 = document.querySelector('.get_entry');
 bt1.addEventListener('click', async () => {
   console.log('Klikki toimii');
-  const url = 'http://localhost:3000/api/entries/1';
+  const url = 'http://helmar.northeurope.cloudapp.azure.com/api/api/entries/1';
 
   fetchData(url).then((data) => {
     // käsitellään fetchData funktiosta tullut JSON
@@ -23,7 +23,7 @@ allButton.addEventListener('click', getUsers);
 
 async function getUsers() {
   console.log('Haetaa kaikki käyttäjät');
-  const url = 'http://127.0.0.1:3000/api/users';
+  const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/users';
   let token = localStorage.getItem('token');
   const options = {
     method: 'GET',
@@ -44,6 +44,37 @@ async function getUsers() {
   //   console.error(error);
   // }
 }
+function updateUser(evt) {
+  const id = evt.target.getAttribute('data-id'); // or use a method to retrieve the current user's ID
+  const url = `http://helmar.northeurope.cloudapp.azure.com/api/api/users/${id}`;
+  let token = localStorage.getItem('token');
+  const userData = {
+    // Include the fields you want to update
+    username: 'UpdatedUsername',
+    user_level: 'UpdatedLevel',
+    user_email: 'UpdateEmail',
+    // ... any other fields ...
+  };
+  
+  const options = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token,
+    },
+    body: JSON.stringify(userData),
+  };
+  
+  fetchData(url, options).then((data) => {
+    console.log('User updated:', data);
+    // Handle the response. E.g., update the UI or give feedback to the user
+  }).catch((error) => {
+    console.error('Error updating user:', error);
+  });
+}
+
+const updateButton = document.querySelector('.update-button');
+updateButton.addEventListener('click', updateUser);
 
 function createTable(data) {
   console.log(data);
@@ -130,7 +161,7 @@ function deleteUser(evt) {
   //   <td>2</td>
   // </tr>
 
-  const url = `http://127.0.0.1:3000/api/users/${id}`;
+  const url = `http://helmar.northeurope.cloudapp.azure.com/api/api/users/${id}`;
   let token = localStorage.getItem('token');
   const options = {
     method: 'DELETE',
@@ -161,7 +192,7 @@ async function showUserName() {
 
   // 2. hae uudestaan /api/auth/me endpointin kautta
 
-  const url = 'http://localhost:3000/api/auth/me';
+  const url = 'http://helmar.northeurope.cloudapp.azure.com/api/api/auth/me';
   let token = localStorage.getItem('token');
   const options = {
     method: 'GET',
@@ -188,7 +219,7 @@ async function getAllUsers() {
   console.log('toimii!');
 
   try {
-    const response = await fetch('http://127.0.0.1:3000/api/users');
+    const response = await fetch('http://helmar.northeurope.cloudapp.azure.com/api/api/users');
     console.log(response);
     const data = await response.json();
     console.log(data);

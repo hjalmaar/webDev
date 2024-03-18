@@ -8,7 +8,7 @@ createUser.addEventListener('click', async (evt) => {
   evt.preventDefault();
   console.log('Nyt luodaan käyttäjä');
 
-  const url = 'http://127.0.0.1:3000/api/users';
+  const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/users';
 
   // # Create user
   // POST http://127.0.0.1:3000/api/users
@@ -69,7 +69,7 @@ loginUser.addEventListener('click', async (evt) => {
   //   "password": "secret"
   // }
 
-  const url = 'http://localhost:3000/api/auth/login';
+  const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/auth/login';
 
   const form = document.querySelector('.login_form');
 
@@ -101,7 +101,7 @@ loginUser.addEventListener('click', async (evt) => {
     } else {
       alert('Authorized: you will now be redirected in 3 seconds');
       setTimeout(function () {
-        //window.location.href = 'start-api-harjoituspohja.html';
+        window.location.href = 'start-api-harjoituspohja.html';
       }, 3000);
     }
   });
@@ -116,7 +116,7 @@ meRequest.addEventListener('click', async () => {
   // GET http://localhost:3000/api/auth/me
   // Authorization: Bearer (put-user-token-here)
 
-  const url = 'http://localhost:3000/api/auth/me';
+  const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/auth/me';
   const muntokeni = localStorage.getItem('token');
   console.log('Tämä on haettu LocalStoragesta', muntokeni);
 
