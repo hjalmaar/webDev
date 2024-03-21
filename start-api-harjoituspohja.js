@@ -4,7 +4,7 @@ import { fetchData } from './fetch.js';
 const bt1 = document.querySelector('.get_entry');
 bt1.addEventListener('click', async () => {
   console.log('Klikki toimii');
-  const url = 'http://helmar.northeurope.cloudapp.azure.com/api/api/entries/1';
+  const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/entries/1';
 
   fetchData(url).then((data) => {
     // käsitellään fetchData funktiosta tullut JSON
@@ -36,45 +36,36 @@ async function getUsers() {
     createTable(data);
   });
 
-  // vaihtoehtoinen tapa
-  // try {
-  //   const responseData = await fetchData(url, options);
-  //   console.log(responseData);
-  // } catch (error) {
-  //   console.error(error);
-  // }
 }
-function updateUser(evt) {
-  const id = evt.target.getAttribute('data-id'); // or use a method to retrieve the current user's ID
-  const url = `http://helmar.northeurope.cloudapp.azure.com/api/api/users/${id}`;
+function updateUser(event) {
+  event.preventDefault(); 
+  
   let token = localStorage.getItem('token');
   const userData = {
-    // Include the fields you want to update
-    username: 'UpdatedUsername',
-    user_level: 'UpdatedLevel',
-    user_email: 'UpdateEmail',
-    // ... any other fields ...
+    username: document.getElementById('username').value,
+    password: document.getElementById('password').value,
+    email: document.getElementById('email').value
   };
-  
+
   const options = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token,
+      'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify(userData),
+    body: JSON.stringify(userData)
   };
-  
+
+  const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/users';
   fetchData(url, options).then((data) => {
     console.log('User updated:', data);
-    // Handle the response. E.g., update the UI or give feedback to the user
+    alert('User updated successfully!');
   }).catch((error) => {
     console.error('Error updating user:', error);
   });
 }
-
-const updateButton = document.querySelector('.update-button');
-updateButton.addEventListener('click', updateUser);
+const updateUserForm = document.getElementById('updateUserForm');
+updateUserForm.addEventListener('submit', updateUser);
 
 function createTable(data) {
   console.log(data);
@@ -100,9 +91,6 @@ function createTable(data) {
     const td2 = document.createElement('td');
     td2.innerText = rivi.user_level;
 
-    // <td><button class="check" data-id="2">Info</button></td>
-    // const td3 = document.createElement('td');
-    //td3.innerHTML = `<button class="check" data-id="${rivi.user_id}">Info</button>`;
 
     const td3 = document.createElement('td');
     const button1 = document.createElement('button');
@@ -141,6 +129,226 @@ function getUser() {
   console.log('Haet tietoa');
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  const addEntryForm = document.getElementById('addEntryForm');
+
+  if (addEntryForm) {
+    addEntryForm.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/entries';
+      let token = localStorage.getItem('token'); // Assuming you store your token in local storage
+
+      // Validate the token exists before trying to send the data
+      if (!token) {
+        alert('No token found. Please log in.');
+        return; // Exit the function if no token
+      }
+
+      const entryData = {
+        entry_date: document.getElementById('entry_date').value,
+        mood: document.getElementById('mood').value,
+        weight: parseFloat(document.getElementById('weight').value),
+        sleep_hours: parseFloat(document.getElementById('sleep_hours').value),
+        notes: document.getElementById('notes').value
+      };
+
+      console.log('Sending entry data:', entryData); // Debugging line
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // The token must be valid
+        },
+        body: JSON.stringify(entryData)
+      };
+
+      fetch(url, options)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Entry added:', data); // Response data from the server
+          alert('Entry added successfully!');
+          // If you have a function to update the entries list, call it here
+        })
+        .catch((error) => {
+          console.error('Error adding entry:', error);
+          alert('Failed to add entry. Please check the console for more information.');
+        });
+    });
+  } else {
+    console.error('Form not found on the page.');
+  }
+});
+
+function deleteEntry(entryId) {
+  if (confirm('Are you sure you want to delete this entry?')) {
+    const url = `https://helmar.northeurope.cloudapp.azure.com/api/api/entries/${entryId}`;
+    let token = localStorage.getItem('token');
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` 
+      }
+    };
+
+    fetchData(url, options)
+      .then(() => {
+        // Remove the entry from the table or refresh the table
+        console.log(`Entry ${entryId} deleted`);
+        getEntries(); // Refresh entries
+      })
+      .catch(error => {
+        console.error('Error deleting entry:', error);
+      });
+  }
+}
+
+function getEntries() {
+  const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/entries';
+  let token = localStorage.getItem('token'); // Ensure you have the token stored in localStorage
+
+  const options = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    }
+  };
+
+  fetchData(url, options)
+    .then(data => {
+      console.log('Entries:', data);
+      createEntriesTable(data); // Assuming 'data' is an array of entries
+    })
+    .catch(error => {
+      console.error('Error fetching entries:', error);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  getEntries();
+});
+
+
+function createEntriesTable(entries) {
+  // Select the tbody element specifically for entries
+  const tbody = document.querySelector('.entries-tbody');
+  tbody.innerHTML = ''; // Clear existing table data
+
+  // Iterate over each entry and create table rows
+  entries.forEach((entry) => {
+    const tr = document.createElement('tr'); // Create a new row
+
+    // Create and fill the table cells with entry data
+    const tdDate = document.createElement('td');
+    tdDate.innerText = entry.entry_date;
+
+    const tdMood = document.createElement('td');
+    tdMood.innerText = entry.mood;
+
+    const tdWeight = document.createElement('td');
+    tdWeight.innerText = entry.weight;
+
+    const tdSleepHours = document.createElement('td');
+    tdSleepHours.innerText = entry.sleep_hours;
+
+    const tdNotes = document.createElement('td');
+    tdNotes.innerText = entry.notes;
+    const tdEdit = document.createElement('td');
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.onclick = () => editEntry(entry.entry_id);
+    tdEdit.appendChild(editButton);
+
+    const tdDelete = document.createElement('td');
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.onclick = () => deleteEntry(entry.entry_id);
+    tdDelete.appendChild(deleteButton);
+
+    // Append cells to the row
+    tr.appendChild(tdDate);
+    tr.appendChild(tdMood);
+    tr.appendChild(tdWeight);
+    tr.appendChild(tdSleepHours);
+    tr.appendChild(tdNotes);
+    tr.appendChild(tdEdit);
+    tr.appendChild(tdDelete);
+
+    // Append the row to the tbody
+    tbody.appendChild(tr);
+  });
+}
+
+function editEntry(entryId) {
+  const newEntryDate = prompt('Enter the new entry date (YYYY-MM-DD):', '');
+  const newMood = prompt('Enter the new mood:', '');
+  const newWeight = prompt('Enter the new weight:', '');
+  const newSleepHours = prompt('Enter the new sleep hours:', '');
+  const newNotes = prompt('Enter the new notes:', '');
+
+  // Construct the entry object
+  const updatedEntry = {
+    entry_date: newEntryDate,
+    mood: newMood,
+    weight: parseFloat(newWeight),
+    sleep_hours: parseFloat(newSleepHours),
+    notes: newNotes
+  };
+
+  // Prepare the PUT request
+  const url = `https://helmar.northeurope.cloudapp.azure.com/api/api/entries/${entryId}`;
+  let token = localStorage.getItem('token');
+
+  const options = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(updatedEntry)
+  };
+
+  // Send the PUT request
+  fetchData(url, options)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error updating the entry');
+      }
+      return response.json();
+    })
+    .then(updatedEntry => {
+      console.log('Entry updated:', updatedEntry);
+      alert('Entry updated successfully!');
+      getEntries(); // Refresh the entries display
+    })
+    .catch(error => {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Error', error.message);
+      }
+      alert('Failed to update entry. Check console for more information.');
+    });
+    
+}
+
+
 function deleteUser(evt) {
   console.log('Deletoit tietoa');
   console.log(evt);
@@ -153,15 +361,9 @@ function deleteUser(evt) {
   const id2 = evt.target.parentElement.nextElementSibling.textContent;
   console.log('Toinen tapa: ', id2);
 
-  // <tr>
-  //   <td>Melissa</td>
-  //   <td>5150</td>
-  //   <td><button class="check" data-id="2">Info</button></td>
-  //   <td><button class="del" data-id="2">Delete</button></td>
-  //   <td>2</td>
-  // </tr>
 
-  const url = `http://helmar.northeurope.cloudapp.azure.com/api/api/users/${id}`;
+
+  const url = `https://helmar.northeurope.cloudapp.azure.com/api/api/users/${id}`;
   let token = localStorage.getItem('token');
   const options = {
     method: 'DELETE',
@@ -182,17 +384,7 @@ function deleteUser(evt) {
 async function showUserName() {
   console.log('Hei täällä ollaan! Nyt pitäisi hakea käyttäjän tiedot');
 
-  // hae käyttäjän omat tiedot
-  // 1. joko lokal storagesta jos on tallessa
-  //let name = localStorage.getItem('name');
-
-  // hae elementti johon printtaat tiedot
-  //console.log('Nimesi on:', name);
-  //document.getElementById('name').innerHTML = name;
-
-  // 2. hae uudestaan /api/auth/me endpointin kautta
-
-  const url = 'http://helmar.northeurope.cloudapp.azure.com/api/api/auth/me';
+  const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/auth/me';
   let token = localStorage.getItem('token');
   const options = {
     method: 'GET',
@@ -208,12 +400,6 @@ async function showUserName() {
 }
 
 showUserName();
-
-// 1. testataan ensin YKSI endpoint joka ei vaadi tokenia
-// 2. uudelleen strukturoidaan koodi jotta se on modulaarisempi
-
-// tämä toimi ennen autentikaatiota, nyt tarvitsee tokenin, siistitään pian!
-// sivuille on nyt myös lisätty navigaatio html sivuun, sekä siihen sopiva CSS koodi, hae siis uusi HTML ja UUSI CSS ennen kun aloitat
 
 async function getAllUsers() {
   console.log('toimii!');

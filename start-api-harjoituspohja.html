@@ -19,42 +19,6 @@
 
     <h3>/api/users</h3>
 
-    <h3>Esimerkkitaulukko</h3>
-
-    <table class="styled-table">
-      <thead>
-        <tr>
-          <th>User Name</th>
-          <th>User Level</th>
-          <th>Info</th>
-          <th>Delete</th>
-          <th>ID</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Dom</td>
-          <td>6000</td>
-          <td><button class="check" data-id="1">Info</button></td>
-          <td><button class="del" data-id="1">Delete</button></td>
-          <td>1</td>
-        </tr>
-        <!--  <tr class="active-row"> -->
-        <tr>
-          <td>Melissa</td>
-          <td>5150</td>
-          <td><button class="check" data-id="2">Info</button></td>
-          <td><button class="del" data-id="2">Delete</button></td>
-          <td>2</td>
-        </tr>
-        <!-- and so on... -->
-        <!-- Delete nappula poistaa käyttäjän-->
-        <!-- käytämme tässä apuna data-attribuutteja-->
-        <!-- # Delete user
-              DELETE http://127.0.0.1:3000/users/:id
-        -->
-      </tbody>
-    </table>
 
     <div class="forms">
       <div style="flex: 1">
@@ -89,16 +53,12 @@
             </tr>
           </thead>
           <tbody class="tbody">
-            <!-- tänne haetaan kaikki käyttäjät -->
-            <!-- # Get all users -->
-            <!-- GET http://127.0.0.1:3000/api/users -->
-          </tbody>
         </table>
 
         <button class="get_users">Hae users tiedot</button>
       </div>
       <div style="flex: 1">
-        <h3>PUT and FORMS</h3>
+        <h3>Update your </h3>
 
         <p>
           Lisää ja päivitä käyttäjiä eli users tiedot formin avulla. Formi lisää uuden käyttäjän
@@ -118,18 +78,52 @@
           }
           </code></pre>
 
-          <form class="update-form">
+          <form id="updateUserForm" class="update-form">
             <label for="username">User Name:</label><br>
             <input type="text" id="username" name="username" required><br>
             <label for="email">Email:</label><br>
             <input type="email" id="email" name="email" required><br>
-            <label for="userlevel">User Level:</label><br>
-            <input type="text" id="userlevel" name="user_level" required><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br>
             <button type="submit" class="update-button">Update User</button>
           </form>
+          
       </div>
     </div>
+    <h2>Add Entry</h2>
+    <form id="addEntryForm">
+        <label for="entry_date">Entry Date:</label><br>
+        <input type="date" id="entry_date" name="entry_date" required><br>
 
+        <label for="mood">Mood:</label><br>
+        <input type="text" id="mood" name="mood" required><br>
+
+        <label for="weight">Weight:</label><br>
+        <input type="number" id="weight" name="weight" step="0.01" required><br>
+
+        <label for="sleep_hours">Sleep Hours:</label><br>
+        <input type="number" id="sleep_hours" name="sleep_hours" step="0.1" required><br>
+
+        <label for="notes">Notes:</label><br>
+        <textarea id="notes" name="notes" rows="4" required></textarea><br>
+
+        <button type="submit">Submit Entry</button>
+    </form>
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Entry Date</th>
+          <th>Mood</th>
+          <th>Weight</th>
+          <th>Sleep Hours</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody class="entries-tbody">
+        <!-- Entries will be populated here by JavaScript -->
+      </tbody>
+    </table>
+    
     <dialog class="info_dialog">
       <p>
         <!-- tänne haetaan yksittäinen valittu käyttäjät -->      
