@@ -37,6 +37,8 @@ async function getUsers() {
   });
 
 }
+
+// Updates User info
 function updateUser(event) {
   event.preventDefault(); 
   
@@ -210,6 +212,188 @@ function deleteEntry(entryId) {
   }
 }
 
+// This event listener waits for the DOM to be fully loaded before executing the script.
+document.addEventListener('DOMContentLoaded', () => {
+  // Grabbing the form element from the DOM using its ID 'medicationForm'.
+  const medicationForm = document.getElementById('medicationForm');
+
+  // Checking if the form exists in the DOM to avoid null reference errors.
+  if (medicationForm) {
+    // Adding an event listener for the 'submit' event on the form.
+    medicationForm.addEventListener('submit', function(event) {
+      event.preventDefault(); // This prevents the form from submitting the traditional way, which would cause a page reload.
+
+      // The URL to which the form data will be sent via fetch.
+      const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/medications';
+      // Retrieving the authentication token from localStorage.
+      let token = localStorage.getItem('token'); 
+
+      // If the token is not available, an alert is shown to the user and the function exits.
+      if (!token) {
+        alert('No token found. Please log in.');
+        return; // Exiting the function here prevents the code below from executing.
+      }
+
+      // Collecting the form data and organizing it into an object.
+      const medicationData = {
+        name: document.getElementById('med_name').value,
+        dosage: document.getElementById('dosage').value,
+        frequency: document.getElementById('frequency').value,
+        start_date: document.getElementById('start_date').value,
+        end_date: document.getElementById('end_date').value
+        // The user_id would be added here as well, retrieved from somewhere in your application context or localStorage.
+      };
+
+      // A console log for debugging purposes, to see the data that will be sent.
+      console.log('Sending medication data:', medicationData);
+
+      // The options object for the fetch call includes the HTTP method, headers, and the stringified form data.
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // The token is used here for authorization.
+        },
+        body: JSON.stringify(medicationData) // The medicationData object is converted to a JSON string to be sent in the request body.
+      };
+
+      // Making the fetch call with the specified URL and options.
+      fetch(url, options)
+        .then(response => {
+          if (!response.ok) {
+            // If the response status code indicates an error, an Error is thrown with the status code.
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          // If the response is okay, it's parsed to JSON.
+          return response.json();
+        })
+        .then(data => {
+          // If the request was successful, log the response data.
+          console.log('Medication added:', data);
+          // And alert the user that the medication has been successfully added.
+          alert('Medication added successfully!');
+          // Additional logic to update the UI can be placed here.
+        })
+        .catch((error) => {
+          // Any errors during fetch (including those thrown) are caught here.
+          console.error('Error adding medication:', error);
+          // And an alert is shown to the user.
+          alert('Failed to add medication. Please check the console for more information.');
+        });
+    });
+  } else {
+    // If the medication form is not found on the page, a console error is logged.
+    console.error('Medication form not found on the page.');
+  }
+});
+
+
+// Define a function to fetch and render the medication data
+function fetchAndRenderMedicationData() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    console.error('No token found in localStorage.');
+    return;
+  }
+
+  fetch('https://helmar.northeurope.cloudapp.azure.com/api/api/medications', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Network response was not ok (status: ${response.status})`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+    createMedTable(data); // Call createTable with the data
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+// Event listener for DOM content loaded
+document.addEventListener('DOMContentLoaded', (event) => {
+  // Fetch and render medication data when the page is loaded
+  fetchAndRenderMedicationData();
+
+  // Set up the click event listener for the 'getMedication' button
+  const getMedicationButton = document.getElementById('getMedication');
+  getMedicationButton.addEventListener('click', fetchAndRenderMedicationData);
+});
+
+function createMedTable(data) {
+  const tbody = document.querySelector('.medications-tbody');
+  tbody.innerHTML = ''; // Clear any existing content
+
+  data.forEach((item) => {
+    // Create a row template
+    const row = document.createElement('tr');
+
+    // Add table data for medication details
+    row.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.dosage}</td>
+      <td>${item.frequency}</td>
+      <td>${new Date(item.start_date).toLocaleDateString()}</td>
+      <td>${new Date(item.end_date).toLocaleDateString()}</td>
+      <td>
+        <button class="edit-btn" data-id="${item.medication_id}">Edit</button>
+        <button class="delete-btn" data-id="${item.medication_id}">Delete</button>
+      </td>
+    `;
+
+    
+    tbody.appendChild(row);
+  });
+
+  // After all rows have been added to the table, add event listeners to the buttons
+  tbody.querySelectorAll('.edit-btn').forEach(button => {
+    button.addEventListener('click', (event) => {
+      const id = event.target.getAttribute('data-id');
+      editMedication(id); // Ensure this function is defined
+    });
+  });
+
+  tbody.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', (event) => {
+      const id = event.target.getAttribute('data-id');
+      deleteMedication(id); // Ensure this function is defined
+    });
+  });
+}
+
+function deleteMedication(medicationId) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('No token found. Please log in.');
+    return;
+  }
+
+  if (confirm('Are you sure you want to delete this medication?')) {
+    fetch(`https://helmar.northeurope.cloudapp.azure.com/api/api/medications/${medicationId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Network response was not ok (status: ${response.status})`);
+      }
+      fetchAndRenderMedicationData(); // Refresh the data
+    })
+    .catch(error => {
+      console.error('Error deleting medication:', error);
+    });
+  }
+}
+
+
 function getEntries() {
   const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/entries';
   let token = localStorage.getItem('token'); // Ensure you have the token stored in localStorage
@@ -348,6 +532,25 @@ function editEntry(entryId) {
     
 }
 
+
+function logoutAndRedirect() {
+  // Remove the token from localStorage
+  localStorage.removeItem('token');
+  
+  // Redirect to the starting page or login page
+  window.location.href = '/index';
+}
+
+// Check if the logout link exists before adding the event listener
+const logoutLink = document.querySelector('.logout a');
+if (logoutLink) {
+  logoutLink.addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent the link from navigating
+    logoutAndRedirect();
+  });
+} else {
+  console.error("Logout link not found. Make sure the class is correct and the DOM is fully loaded.");
+}
 
 function deleteUser(evt) {
   console.log('Deletoit tietoa');

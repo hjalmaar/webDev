@@ -11,24 +11,14 @@
     <h3>Register to be a user if you are not already</h3>
     <form class="create_user_form">
       <label for="username">Username</label>
-      <input type="text" name="username" placeholder="test-update4" />
+      <input type="text" name="username" placeholder="username" />
       <label for="password">Password</label>
-      <input type="password" name="password" placeholder="test-pw-update4" />
+      <input type="password" name="password" placeholder="Must be 8 digits" />
       <label for="email">Email</label>
       <input type="email" name="email" placeholder="update4@example.com" />
       <input name="submit" type="submit" value="Post and log to console" class="createuser" />
     </form>
     <h3>Login if you already have a user</h3>
-    <pre><code>
-      # Login
-      POST http://localhost:3000/api/auth/login
-      content-type: application/json
-      
-      {
-        "username": "user",
-        "password": "secret"
-      }
-      </code></pre>
     <div>
       <form class="login_form">
         <label for="username">Username</label>
@@ -52,7 +42,7 @@
       <h5>USER INFO:</h5>
       <div id="meResponse"></div>
     </div>
-    <h3>Local Storage</h3>
+  <h3>Local Storage</h3>
     <div>
       <button id="clearButton">Clear localStorage</button>
       <br />

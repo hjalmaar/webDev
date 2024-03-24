@@ -17,12 +17,11 @@
 
     <div class="user">Hei kirjautunut käyttäjä: <span id="name">NIMI TÄHÄN</span>!</div>
 
-    <h3>/api/users</h3>
-
-
+    
     <div class="forms">
       <div style="flex: 1">
         <h3>GET and DELETE</h3>
+
 
         <p>
           Hae käyttäjän tiedot painamalla alla olevaa nappia. Tämä hakee tiedot sekä luo taulukon
@@ -58,12 +57,7 @@
         <button class="get_users">Hae users tiedot</button>
       </div>
       <div style="flex: 1">
-        <h3>Update your </h3>
-
-        <p>
-          Lisää ja päivitä käyttäjiä eli users tiedot formin avulla. Formi lisää uuden käyttäjän
-          nappulasta 'post'. Huomio, että PUT metodi toimii vain kirjatuneen käyttäjän osalta. Eli voit vain muokata käyttäjää, millä olet parhaimmillaan kirjautuneena. Jatkossa olisi fiksua hakea käyttäjän tiedot suoraan formien INPUT kenttiin.
-        </p>
+        <h3>Update your user information </h3>
 
         <pre><code>
           
@@ -88,6 +82,28 @@
             <button type="submit" class="update-button">Update User</button>
           </form>
           
+          <H2>Here you can add medications that you need to take</H2>
+          <form id="medicationForm">
+            <!-- Assuming the user_id will be added programmatically and not by the user -->
+            <input type="hidden" id="user_id" name="user_id">
+        
+            <label for="medname">Medication Name:</label><br>
+            <input type="text" id="med_name" name="med_name" required><br>
+        
+            <label for="dosage">Dosage:</label><br>
+            <input type="text" id="dosage" name="dosage" required><br>
+        
+            <label for="frequency">Frequency:</label><br>
+            <input type="text" id="frequency" name="frequency" required><br>
+        
+            <label for="start_date">Start Date:</label><br>
+            <input type="date" id="start_date" name="start_date" required><br>
+        
+            <label for="end_date">End Date:</label><br>
+            <input type="date" id="end_date" name="end_date" required><br>
+        
+            <button type="submit">Submit Medication</button>
+        </form>
       </div>
     </div>
     <h2>Add Entry</h2>
@@ -123,6 +139,23 @@
         <!-- Entries will be populated here by JavaScript -->
       </tbody>
     </table>
+    <h2>Your medications should popup here</h2>
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Medication Name</th>
+          <th>Dosage</th>
+          <th>Frequency</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+        </tr>
+      </thead>
+      <tbody class="medications-tbody">
+        <!-- Medication entries will be populated here by JavaScript -->
+      </tbody>
+      <button id="getMedication">Get Medication Info</button>
+    </table>
+    
     
     <dialog class="info_dialog">
       <p>
@@ -134,8 +167,6 @@
       </p>
       <button autofocus>Close</button>
     </dialog>
-
-    <h3>Kotitehtävä, tee ja testaa kaikki: /api/entries</h3>
 
     <p>Hae käyttäjän (user: 1) entires tiedot ja console.log</p>
     <pre>
