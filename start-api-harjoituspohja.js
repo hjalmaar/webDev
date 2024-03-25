@@ -1,19 +1,6 @@
 import './style.css';
 import { fetchData } from './fetch.js';
 
-const bt1 = document.querySelector('.get_entry');
-bt1.addEventListener('click', async () => {
-  console.log('Klikki toimii');
-  const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/entries/1';
-
-  fetchData(url).then((data) => {
-    // käsitellään fetchData funktiosta tullut JSON
-    console.log(data);
-  });
-
-  // # Get entries by id
-  // # GET http://localhost:3000/api/entries/:id
-});
 
 // Haetaan kaikki käyttäjät ja luodaan niistä taulukko
 // 1. Hae ensin nappula ja kutsu funktiota (keksi nimi)
@@ -130,7 +117,7 @@ function createTable(data) {
 function getUser() {
   console.log('Haet tietoa');
 }
-
+// Add entry
 document.addEventListener('DOMContentLoaded', () => {
   const addEntryForm = document.getElementById('addEntryForm');
 
@@ -188,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Delete an entry
 function deleteEntry(entryId) {
   if (confirm('Are you sure you want to delete this entry?')) {
     const url = `https://helmar.northeurope.cloudapp.azure.com/api/api/entries/${entryId}`;
@@ -212,6 +200,7 @@ function deleteEntry(entryId) {
   }
 }
 
+//Add medications
 // This event listener waits for the DOM to be fully loaded before executing the script.
 document.addEventListener('DOMContentLoaded', () => {
   // Grabbing the form element from the DOM using its ID 'medicationForm'.
@@ -366,6 +355,53 @@ function createMedTable(data) {
     });
   });
 }
+//edit medications
+function editMedication(medicationId) {
+  
+  const newName = prompt('Enter new medication name:');
+  const newDosage = prompt('Enter new dosage:');
+  const newFrequency = prompt('Enter new frequency:');
+  // Assuming you're not editing dates in this simple prompt setup.
+  
+  if (newName && newDosage && newFrequency) {
+    // Construct an object with the new medication details
+    const updatedMedication = {
+      medication_id: medicationId, // Make sure to send back the ID for identification on the backend
+      name: newName,
+      dosage: newDosage,
+      frequency: newFrequency,
+      // Include any other details you might have prompted for
+    };
+
+    // Fetch call to update the medication on the server
+    const token = localStorage.getItem('token'); // Reuse the token from localStorage
+    fetch(`https://helmar.northeurope.cloudapp.azure.com/api/api/medications/${medicationId}`, {
+      method: 'PUT', // Assuming the server expects a PUT request for updates
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedMedication),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to update medication.');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Medication updated:', data);
+      fetchAndRenderMedicationData(); // Refresh the medication list
+    })
+    .catch(error => {
+      console.error('Error updating medication:', error);
+    });
+  } else {
+    // If the user cancels one of the prompts, you could notify them or just quietly exit
+    console.log('Medication update cancelled.');
+  }
+}
+
 
 function deleteMedication(medicationId) {
   const token = localStorage.getItem('token');

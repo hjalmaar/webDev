@@ -10,19 +10,8 @@ createUser.addEventListener('click', async (evt) => {
 
   const url = 'https://helmar.northeurope.cloudapp.azure.com/api/api/users';
 
-  // # Create user
-  // POST http://127.0.0.1:3000/api/users
-  // content-type: application/json
-
   const form = document.querySelector('.create_user_form');
   const username = form.querySelector('input[name=username]').value;
-
-  // kokeillaan ensin kovakoodattuna
-  // const body = {
-  //   username: 'testii',
-  //   password: 'testii',
-  //   email: 'testii@testii.fi',
-  // };
 
   const data = {
     username: username,
@@ -31,17 +20,12 @@ createUser.addEventListener('click', async (evt) => {
   };
 
   const options = {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    method: 'POST', 
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data), // body data type must match "Content-Type" header
   };
-
-  // fetchData(url, options).then((data) => {
-  //   // käsitellään fetchData funktiosta tullut JSON
-  //   console.log(data);
-  // });
 
   // parempi ehkä käyttää samaa muotoilua
   try {
@@ -86,7 +70,7 @@ loginUser.addEventListener('click', async (evt) => {
     body: JSON.stringify(data), // body data type must match "Content-Type" header
   };
 
-  // 1. Käy Ulla läpi tämä auth sivu ja sync/await rakenne vaihtoehto
+ 
   // Tähän redirect
   // samoin voi laittaa userID:n talteen..
 

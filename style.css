@@ -214,6 +214,28 @@ input[type=text], input[type=password], input[type=email] {
   margin: 8px 0;
   box-sizing: border-box;
 }
+.medications-layout {
+  display: flex;
+  justify-content: space-between; /* This separates the form and table */
+  gap: 20px; /* Adds some space between the form and the table */
+}
+
+.medication-form-container, .medications-table-container {
+  flex: 1; /* This ensures that the form and the table each take up half the space */
+}
+.entries-layout,
+.medications-layout {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.entry-form-container,
+.entries-table-container,
+.medication-form-container,
+.medications-table-container {
+  flex: 1;
+}
 
 /* Koodiesimerkin tyylittely */
 pre {
@@ -231,5 +253,11 @@ pre {
 @media screen and (max-width: 800px) {
   .forms {
     flex-direction: column;
+  }  .entries-layout,
+  .medications-layout {
+    flex-direction: column;
+  }
+  .medications-layout {
+    flex-direction: column; 
   }
 }
