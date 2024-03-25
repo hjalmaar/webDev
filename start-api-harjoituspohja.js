@@ -310,9 +310,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
   // Fetch and render medication data when the page is loaded
   fetchAndRenderMedicationData();
 
-  // Set up the click event listener for the 'getMedication' button
-  const getMedicationButton = document.getElementById('getMedication');
-  getMedicationButton.addEventListener('click', fetchAndRenderMedicationData);
 });
 
 function createMedTable(data) {
