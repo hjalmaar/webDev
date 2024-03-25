@@ -17,48 +17,95 @@
 
     <div class="user">Hei kirjautunut käyttäjä: <span id="name">NIMI TÄHÄN</span>!</div>
 
-    <h3>/api/users</h3>
+    <div class="medications-layout">
+      <!-- Medication Form Section -->
+      <div class="medication-form-container">
+          <h2>Here you can add medications that you need to take</h2>
+          <form id="medicationForm">
+              <!-- Form contents -->
+              <input type="hidden" id="user_id" name="user_id">
+              <label for="med_name">Medication Name:</label><br>
+              <input type="text" id="med_name" name="med_name" required><br>
+              <label for="dosage">Dosage:</label><br>
+              <input type="text" id="dosage" name="dosage" required><br>
+              <label for="frequency">Frequency:</label><br>
+              <input type="text" id="frequency" name="frequency" required><br>
+              <label for="start_date">Start Date:</label><br>
+              <input type="date" id="start_date" name="start_date" required><br>
+              <label for="end_date">End Date:</label><br>
+              <input type="date" id="end_date" name="end_date" required><br>
+              <button type="submit">Submit Medication</button>
+          </form>
+      </div>
 
-    <h3>Esimerkkitaulukko</h3>
+      <!-- Medications Table Section -->
+      <div class="medications-table-container">
+          <h2>Your medications should popup here</h2>
+          <table class="styled-table">
+              <thead>
+                  <tr>
+                      <th>Medication Name</th>
+                      <th>Dosage</th>
+                      <th>Frequency</th>
+                      <th>Start Date</th>
+                      <th>End Date</th>
+                  </tr>
+              </thead>
+              <tbody class="medications-tbody">
+                  <!-- Medication entries will be populated here by JavaScript -->
+              </tbody>
+          </table>
+      </div>
+  </div>
+  <!-- Layout wrapper for Entry Form and Entries Table -->
+<div class="entries-layout">
+  
+  <!-- Entry Form Section -->
+  <div class="entry-form-container">
+    <h2>Add Entry</h2>
+    <form id="addEntryForm">
+      <!-- Form content -->
+      <label for="entry_date">Entry Date:</label><br>
+      <input type="date" id="entry_date" name="entry_date" required><br>
+      <label for="mood">Mood:</label><br>
+      <input type="text" id="mood" name="mood" required><br>
+      <label for="weight">Weight:</label><br>
+      <input type="number" id="weight" name="weight" step="0.01" required><br>
+      <label for="sleep_hours">Sleep Hours:</label><br>
+      <input type="number" id="sleep_hours" name="sleep_hours" step="0.1" required><br>
+      <label for="notes">Notes:</label><br>
+      <textarea id="notes" name="notes" rows="4" required></textarea><br>
+      <button type="submit">Submit Entry</button>
+    </form>
+  </div>
 
+  <!-- Entries Table Section -->
+  <div class="entries-table-container">
+    <h2>Your diary entries will show here</h2>
     <table class="styled-table">
+      <!-- Table content -->
       <thead>
         <tr>
-          <th>User Name</th>
-          <th>User Level</th>
-          <th>Info</th>
-          <th>Delete</th>
-          <th>ID</th>
+          <th>Entry Date</th>
+          <th>Mood</th>
+          <th>Weight</th>
+          <th>Sleep Hours</th>
+          <th>Notes</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>Dom</td>
-          <td>6000</td>
-          <td><button class="check" data-id="1">Info</button></td>
-          <td><button class="del" data-id="1">Delete</button></td>
-          <td>1</td>
-        </tr>
-        <!--  <tr class="active-row"> -->
-        <tr>
-          <td>Melissa</td>
-          <td>5150</td>
-          <td><button class="check" data-id="2">Info</button></td>
-          <td><button class="del" data-id="2">Delete</button></td>
-          <td>2</td>
-        </tr>
-        <!-- and so on... -->
-        <!-- Delete nappula poistaa käyttäjän-->
-        <!-- käytämme tässä apuna data-attribuutteja-->
-        <!-- # Delete user
-              DELETE http://127.0.0.1:3000/users/:id
-        -->
+      <tbody class="entries-tbody">
+        <!-- Entries will be populated here by JavaScript -->
       </tbody>
     </table>
+  </div>
 
+</div>
+
+    
     <div class="forms">
       <div style="flex: 1">
         <h3>GET and DELETE</h3>
+
 
         <p>
           Hae käyttäjän tiedot painamalla alla olevaa nappia. Tämä hakee tiedot sekä luo taulukon
@@ -89,47 +136,27 @@
             </tr>
           </thead>
           <tbody class="tbody">
-            <!-- tänne haetaan kaikki käyttäjät -->
-            <!-- # Get all users -->
-            <!-- GET http://127.0.0.1:3000/api/users -->
-          </tbody>
         </table>
 
         <button class="get_users">Hae users tiedot</button>
       </div>
       <div style="flex: 1">
-        <h3>PUT and FORMS</h3>
+        <h3>Update your user information </h3>
 
-        <p>
-          Lisää ja päivitä käyttäjiä eli users tiedot formin avulla. Formi lisää uuden käyttäjän
-          nappulasta 'post'. Huomio, että PUT metodi toimii vain kirjatuneen käyttäjän osalta. Eli voit vain muokata käyttäjää, millä olet parhaimmillaan kirjautuneena. Jatkossa olisi fiksua hakea käyttäjän tiedot suoraan formien INPUT kenttiin.
-        </p>
-
-        <pre><code>
-          
-          # Update user's own data (requires token)
-          PUT http://127.0.0.1:3000/api/users/
-          content-type: application/json
-          
-          {
-            "username": "test-update4",
-            "password": "test-pw-update4",
-            "email": "update4@example.com"
-          }
-          </code></pre>
-
-          <form class="update-form">
+          <form id="updateUserForm" class="update-form">
             <label for="username">User Name:</label><br>
             <input type="text" id="username" name="username" required><br>
             <label for="email">Email:</label><br>
             <input type="email" id="email" name="email" required><br>
-            <label for="userlevel">User Level:</label><br>
-            <input type="text" id="userlevel" name="user_level" required><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br>
             <button type="submit" class="update-button">Update User</button>
           </form>
+          
+          
       </div>
-    </div>
-
+    </div>    
+    
     <dialog class="info_dialog">
       <p>
         <!-- tänne haetaan yksittäinen valittu käyttäjät -->      
@@ -140,15 +167,6 @@
       </p>
       <button autofocus>Close</button>
     </dialog>
-
-    <h3>Kotitehtävä, tee ja testaa kaikki: /api/entries</h3>
-
-    <p>Hae käyttäjän (user: 1) entires tiedot ja console.log</p>
-    <pre>
-      # Get entries by id
-      GET http://localhost:3000/api/entries/:id
-    </pre>
-    <button class="get_entry">Hae (user:1) entries</button>
 
     <script type="module" src="/start-api-harjoituspohja.js"></script>
 

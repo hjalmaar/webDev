@@ -13,5 +13,5 @@ export default defineConfig({
     },
   },
   // Public base path could be set here too:
-  //base: '/api/',
+  base: '/api/',
 });
